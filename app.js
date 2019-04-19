@@ -14,7 +14,21 @@ if(url === '/'){
 }
 
 if(url === '/message' && method === 'POST'){
-    fs.writeFileSync('message.pdf', 'Dummy');
+    const body = [];
+
+    req.on('data', (chunk) => {
+        console.log(chunk);
+        body.push(chunk);
+        console.log(body);
+    });
+
+    req.on('end', () => {
+        const parsedBody = Buffer.concat(body).toString();
+        console.log(parsedBody.split('='));
+        const message = parsedBody.split('=')[1];
+        fs.writeFileSync('message.txt', message);
+    });
+    
     res.statusCode = 302;
     res.setHeader('Location', '/');
     return res.end();
