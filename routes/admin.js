@@ -7,11 +7,11 @@ const rootDir = require('../util/app');
 
 const products = [];
 router.get('/admin/add-product', (req, res, next) => {
-    res.sendFile(path.join(rootDir, 'views', 'add-product.html'));
+    res.render('add-product', {pageTitle: 'Add Product'});
 })
  
  router.post('/admin/add-product', (req, res, next) => {
-     products.push({tittle: req.body.title});
+     products.push({title: req.body.title});
      res.redirect('/');
  })
 
