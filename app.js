@@ -4,12 +4,15 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
-const adminRoutes = require('./routes/admin');
+
+app.set('view engine',  'pug');
+app.set('views', 'views'); //where views are located default is /views
+const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(adminRoutes);
+app.use(adminData.routes);
 
 app.use(shopRoutes);
 
