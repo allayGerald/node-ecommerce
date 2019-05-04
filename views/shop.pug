@@ -1,37 +1,24 @@
-<!DOCTYPE html>
-html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        meta(http-equiv="X-UA-Compatible", content="ie=edge")
-        title #{pageTitle}
-        link(rel="stylesheet", href="/css/main.css")
-        link(rel="stylesheet", href="/css/product.css")
+extends layouts/main-layout.pug
 
-    body
-        header.main-header
-            nav.main-header__nav
-                ul.main-header__item-list
-                    li.main-header__item
-                        a(href="/") Shop
-                    li.main-header__item
-                        a(href="/admin/add-product") Add Product
-        main
-            h1 My Products 
-            if products.length > 0
-                .grid
-                    each product in products
-                        article.card.product-item
-                            header.card__header
-                                h1.product__title #{product.title}
-                            .card__image
-                                img(src="https://images.pexels.com/photos/159866/books-book-pages-read-literature-159866.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500", alt="Book")
-                            .card__content
-                                h2.product__price 23
-                                p.product__description Good
-                            .card__actions
-                                button.btn Add To Cart 
-            else
-                h4 No products   
+block styles
+    link(rel="stylesheet", href="/css/product.css")
+block content
+    main
+        h1 My Products 
+        if products.length > 0
+            .grid
+                each product in products
+                    article.card.product-item
+                        header.card__header
+                            h1.product__title #{product.title}
+                        .card__image
+                            img(src="https://images.pexels.com/photos/159866/books-book-pages-read-literature-159866.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500", alt="Book")
+                        .card__content
+                            h2.product__price 23
+                            p.product__description Good
+                        .card__actions
+                            button.btn Add To Cart 
+        else
+            h4 No products   
 
         
