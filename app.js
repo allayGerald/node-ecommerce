@@ -5,8 +5,8 @@ const path = require('path');
 
 const app = express();
 
-app.set('view engine',  'pug');
-app.set('views', 'views'); //where views are located default is /views
+app.set('view engine',  'ejs');
+app.set('views', 'views');  //where views are located default is /views
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
@@ -17,7 +17,7 @@ app.use(adminData.routes);
 app.use(shopRoutes);
 
 app.use((req, res, next) => {
-    res.status(404).render('error-404', {pageTitle: 'Error 404'});
+    res.status(404).render('404', {pageTitle: 'Error 404'});
 });
 
 app.listen(3000);
