@@ -1,4 +1,44 @@
-<%- include('../includes/header')%>
-<%- include('../includes/navigation')%>
-d
-<%- include('../includes/footer')%>
+<%- include('../includes/header.ejs')%>
+<%- include('../includes/navigation.ejs')%>
+
+    <main>
+        <h1>My Products</h1>
+        <% if (products.length > 0) { %>
+            <div class="grid">
+            <% for (let product of products) {
+              let url = product.hasOwnProperty('imageUrl') ? product.imageUrl : 'https://images.pexels.com/photos/159866/books-book-pages-read-literature-159866.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500';
+              %>
+                <article class="card product-item">
+                    <header class="card__header">
+                        <h1 class="product__title"><%= product.title %></h1>
+                    </header> 
+                    <div class="card__image">
+                        <img src="<%= url%>", alt="Book">
+                    </div>
+                    <div class="card__content">
+                        <h2 class="product__price">
+                            <% if(product.hasOwnProperty('price')) {%>
+                                 <%=product.price %> 
+                                <%} else {%>
+                                     <%=50 %>
+                            <% }%>
+                        </h2>
+                        <p class="product__description">
+                             <% if(product.hasOwnProperty('description')) {%>
+                                 <%=product.description %> 
+                                <%} %>
+                        </p>
+                    </div>
+
+                    <div class="card__actions">
+                            <a class="btn" href="/product/edit/<%= product.id %>">Edit</a>
+                            <a class="btn" href="/product/delete/<%= product.id %>">Delete</a>
+                    </div>      
+                </article>
+                <% } %>
+            </div>
+        <% } else { %>
+            No data
+        <% } %>
+    </main>
+<%- include('../includes/footer.ejs')%>
