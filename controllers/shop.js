@@ -12,13 +12,18 @@ exports.getShopPage = (req, res, next) => {
 
 exports.getDetails = (req, res, next) => {
     const prodId = req.params.productId;
-    Product.findById(prodId, product => {
-        res.render('shop/product-details', {
-            product: product,
-            pageTitle: 'Product Details',
-            path: '/shop'
+    Product.findById(prodId)
+        .then(([prod]) => {
+            const product = prod[0];
+            res.render('shop/product-details', {
+                product: product,
+                pageTitle: 'Product Details: '+product.title,
+                path: '/shop'
+            });
         })
-    });
+        .catch(error => {
+            console.log(error);
+        });
 }
 
 exports.getCartPage = (req, res, next) => {
