@@ -14,10 +14,14 @@ exports.postAddProduct = (req, res, next) => {
 
 
 exports.getAdminProductsPage = (req, res, next) => {
-    Product.fetchAll((products) => {
+    Product.fetchAll()
+    .then(([products, fieldData]) => {
         res.render('admin/products',
             { pageTitle: 'Admin Products', products: products, path: 'admin/products' }
         );
+    })
+    .catch(error => {
+        console.log(error);
     });
 }
 
