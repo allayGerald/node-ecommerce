@@ -9,7 +9,8 @@ module.exports = class product {
     }
 
     save() {
-    //    db.execute('INSERT INTO products (title, image_url, description, price) VALUES ('+this.title, this.imageUrl, this.description, this.price +')');
+    return   db.execute('INSERT INTO products (title, image_url, description, price) VALUES (?, ?, ?, ?)', 
+    [this.title, this.imageUrl, this.description, this.price ]);
     }
 
     static fetchAll() {
