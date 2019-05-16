@@ -20,3 +20,14 @@ exports.getAdminProductsPage = (req, res, next) => {
         );
     });
 }
+
+exports.getEditPage = (req, res, next) => {
+    const prodId = req.params.productId;
+    Product.findById(prodId, product => {
+        res.render('admin/edit-product',{
+                product: product,
+                pageTitle: 'Edit Product', 
+                path: 'admin/products'
+            })
+    });
+}

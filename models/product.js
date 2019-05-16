@@ -1,21 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-
-const products = [];
-
-const p = path.join(
-    path.dirname(process.mainModule.filename),
-    'data',
-    'products.json'
-);
-const getProductsFromFile = (cb) => {
-    fs.readFile(p, (error, fileContent) => {
-        if (error) {
-            return cb([]);
-        }
-        cb(JSON.parse(fileContent));
-    });
-}
+const db = require('../util/database');
 
 module.exports = class product {
     constructor(data) {
@@ -26,24 +9,15 @@ module.exports = class product {
     }
 
     save() {
-        this.id = Math.random();
-        getProductsFromFile(products => {
-            products.push(this);
-            fs.writeFile(p, JSON.stringify(products), (error) => {
-                console.log(error);
-            });
-        });
+    //    db.execute('INSERT INTO products (title, image_url, description, price) VALUES ('+this.title, this.imageUrl, this.description, this.price +')');
     }
 
-    static fetchAll(cb) {
-        getProductsFromFile(cb);
+    static fetchAll() {
+        return db.execute('SELECT * FROM products');   
     }
 
     
-  static findById(id, cb) {
-    getProductsFromFile(products => {
-      const product = products.find(p => p.id === id);
-      cb(product);
-    });
+  static findById() {
+   
   }
 }
