@@ -72,3 +72,15 @@ exports.updateProduct = (req, res, next) => {
         })
         .catch(error => console.log(error));
 }
+
+exports.deleteProduct = (req, res, next) => {
+    const productId = req.params.productId;
+
+    Product.destroy({
+        where: {
+            id: productId
+        }
+    }).then(() => {
+        res.redirect('/admin/products');
+    }).catch(error => console.log(error));
+}
