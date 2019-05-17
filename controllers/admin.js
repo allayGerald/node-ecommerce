@@ -32,11 +32,23 @@ exports.getAdminProductsPage = (req, res, next) => {
 
 exports.getEditPage = (req, res, next) => {
     const prodId = req.params.productId;
-    Product.findById(prodId, product => {
+    Product.findById(prodId)
+    .then(([prod]) => {
+        const product = prod[0];
         res.render('admin/edit-product', {
             product: product,
             pageTitle: 'Edit Product',
             path: 'admin/products'
         })
-    });
+    })
+    .catch(error => console.log(error));
+}
+
+exports.updateProduct = (req, res, next) => {
+    const productId = req.params.productId;
+    Product.update(req.body, productId)
+    .then(() => {
+        res.redirect('/admin/products');
+    })
+    .catch(error => console.log(error));
 }
