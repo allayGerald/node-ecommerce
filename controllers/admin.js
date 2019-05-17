@@ -7,14 +7,22 @@ exports.getAddProduct = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
-    const product = new Product(req.body);
-    product.save()
-        .then(() => {
-            res.redirect('/');
-        })
-        .catch(error => {
-            console.log(error);
-        });
+    const title = req.body.title;
+    const imageUrl = req.body.imageUrl;
+    const description = req.body.description;
+    const price = req.body.price;
+
+    Product.create({
+        title: title,
+        description: description,
+        imageUrl: imageUrl,
+        price: price
+    })
+    .then()
+    .catch(error => {
+        console.log(error);
+    })
+    
 }
 
 

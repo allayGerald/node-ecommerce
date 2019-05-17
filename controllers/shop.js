@@ -1,13 +1,15 @@
 const Product = require('../models/product');
 
 exports.getShopPage = (req, res, next) => {
-    Product.fetchAll()
-        .then(([rows, fieldData]) => {
+    Product.findAll()
+        .then(products => {
             res.render('shop/product-list',
-                { pageTitle: 'Shop', products: rows, path: '/shop' }
+                { pageTitle: 'Shop', products: products, path: '/shop' }
             );
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(err)
+        });
 }
 
 exports.getDetails = (req, res, next) => {
@@ -17,7 +19,7 @@ exports.getDetails = (req, res, next) => {
             const product = prod[0];
             res.render('shop/product-details', {
                 product: product,
-                pageTitle: 'Product Details: '+product.title,
+                pageTitle: 'Product Details: ' + product.title,
                 path: '/shop'
             });
         })
