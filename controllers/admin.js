@@ -18,11 +18,11 @@ exports.postAddProduct = (req, res, next) => {
         imageUrl: imageUrl,
         price: price
     })
-    .then()
-    .catch(error => {
-        console.log(error);
-    })
-    
+        .then()
+        .catch(error => {
+            console.log(error);
+        })
+
 }
 
 
@@ -40,23 +40,35 @@ exports.getAdminProductsPage = (req, res, next) => {
 
 exports.getEditPage = (req, res, next) => {
     const prodId = req.params.productId;
-    Product.findById(prodId)
-    .then(([prod]) => {
-        const product = prod[0];
-        res.render('admin/edit-product', {
-            product: product,
-            pageTitle: 'Edit Product',
-            path: 'admin/products'
+    Product.findByPk(prodId)
+        .then(product => {
+            res.render('admin/edit-product', {
+                product: product,
+                pageTitle: 'Edit Product',
+                path: 'admin/products'
+            })
         })
-    })
-    .catch(error => console.log(error));
+        .catch(error => console.log(error));
 }
 
 exports.updateProduct = (req, res, next) => {
     const productId = req.params.productId;
-    Product.update(req.body, productId)
-    .then(() => {
-        res.redirect('/admin/products');
-    })
-    .catch(error => console.log(error));
+    const title = req.body.title;
+    const imageUrl = req.body.imageUrl;
+    const description = req.body.description;
+    const price = req.body.price;
+    Product.update({
+        title: title,
+        description: description,
+        imageUrl: imageUrl,
+        price: price
+    }, {
+            where: {
+                id: productId
+            }
+        })
+        .then(() => {
+            res.redirect('/admin/products');
+        })
+        .catch(error => console.log(error));
 }
