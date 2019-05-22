@@ -16,6 +16,16 @@ const shopRoutes = require('./routes/shop');
 
 const errorController = require('./controllers/error');
 
+app.use((req, res, next) => {
+    User.findOne()
+        .then(user => {
+            req.user = user;
+            next();
+        })
+        .catch(error => {
+            console.log(error);
+        })
+});
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(adminRoutes);
@@ -32,7 +42,17 @@ app.use(errorController.get404Page);
 User.hasMany(Product);
 
 sequelize.sync()
-    .then(() => {
+    .then(result => {
+        return User.findAll({ limit: 1 });
+    })
+    .then(user => {
+        if (user.length === 0) {
+            User.create({ name: "Gerald", password: "!@#", email: "g@mail.com" });
+        }
+        return (user)
+    })
+    .then((user) => {
+        // console.log(user);
         app.listen(3000);
     })
     .catch(error => {
