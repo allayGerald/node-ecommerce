@@ -6,6 +6,8 @@ const path = require('path');
 const app = express();
 
 const sequelize = require('./util/database');
+const Product = require('./models/product');
+const User = require('./models/user');
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');  //where views are located default is /views
@@ -21,6 +23,13 @@ app.use(adminRoutes);
 app.use(shopRoutes);
 
 app.use(errorController.get404Page);
+
+// Product.belongsTo(User, {
+//     constraints: true,
+//      onDelete: 'CASCADE', 
+//      foreignKey: 'userId'
+//     });
+User.hasMany(Product);
 
 sequelize.sync()
     .then(() => {
