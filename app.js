@@ -8,6 +8,8 @@ const app = express();
 const sequelize = require('./util/database');
 const Product = require('./models/product');
 const User = require('./models/user');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');  //where views are located default is /views
@@ -40,6 +42,8 @@ app.use(errorController.get404Page);
 //      foreignKey: 'userId'
 //     });
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsToMany(Product, {through: CartItem});
 
 sequelize.sync()
     .then(result => {
