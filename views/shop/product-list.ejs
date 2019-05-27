@@ -24,7 +24,12 @@
 
                     <div class="card__actions">
                             <a class="btn" href="products/details/<%= product.id %>">Details</a>
-                            <button class="btn">Add To Cart</button>
+                            <form  action="/shop/cart" class="add-cart" method="POST">
+                            <input type="hidden" 
+                                    name="productId"
+                                     value="<%= product.id %>">
+                            <button class="btn" type="submit">Add To Cart</button>
+                            </form>
                     </div>      
                 </article>
                 <% } %>
