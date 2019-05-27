@@ -83,6 +83,19 @@ exports.getCartPage = (req, res, next) => {
 exports.deleteCart = (req, res, next) => {
     const user = req.user;
     const productId = req.body.productId;
+
+    user.getCart()
+    .then(cart => {
+        return cart.getProducts({where: {id: productId}})
+    })
+    .then(products => {
+        product = products[0];
+        return product.cartItem.destroy();
+    })
+    .then(() => {
+        res.redirect('/shop/cart');
+    })
+    .catch(error => console.log(error));
 }
 
 exports.getProductsPage = (req, res, next) => {
