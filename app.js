@@ -43,6 +43,7 @@ app.use(errorController.get404Page);
 //     });
 User.hasMany(Product);
 User.hasOne(Cart);
+Cart.belongsTo(User);
 Cart.belongsToMany(Product, {through: CartItem});
 
 sequelize.sync()
@@ -53,12 +54,15 @@ sequelize.sync()
         if (user.length === 0) {
             User.create({ name: "Gerald", password: "!@#", email: "g@mail.com" });
         }
-        return (user)
+        return user;
     })
-    .then((user) => {
-        // console.log(user);
-        app.listen(3000);
+    .then(user => {
+    //    return user.createCart(); //create cart for thus user
+    app.listen(3000);
     })
+    // .then(cart => {
+    //     app.listen(3000);
+    // })
     .catch(error => {
         console.log(error);
     });

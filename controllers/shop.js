@@ -28,7 +28,16 @@ exports.getDetails = (req, res, next) => {
 }
 
 exports.getCartPage = (req, res, next) => {
-    res.render('shop/cart', { pageTitle: 'Cart', path: '/shop/cart' });
+    req.user.getCart()
+   .then( cart =>{
+       return cart.getProducts();
+      
+})
+.then(products => {
+    res.render('shop/cart', { pageTitle: 'Cart', products: products, 
+    path: 'shop/cart' });
+})
+.catch(error => console.log(error));
 }
 
 exports.getProductsPage = (req, res, next) => {
