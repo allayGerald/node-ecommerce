@@ -85,17 +85,40 @@ exports.deleteCart = (req, res, next) => {
     const productId = req.body.productId;
 
     user.getCart()
-    .then(cart => {
-        return cart.getProducts({where: {id: productId}})
-    })
-    .then(products => {
-        product = products[0];
-        return product.cartItem.destroy();
-    })
-    .then(() => {
-        res.redirect('/shop/cart');
-    })
-    .catch(error => console.log(error));
+        .then(cart => {
+            return cart.getProducts({ where: { id: productId } })
+        })
+        .then(products => {
+            product = products[0];
+            return product.cartItem.destroy();
+        })
+        .then(() => {
+            res.redirect('/shop/cart');
+        })
+        .catch(error => console.log(error));
+}
+
+exports.postOrder = (req, res, next) => {
+    const user = req.user;
+    user.getCart()
+        .then(cart => {
+            return cart.getProducts();
+        })
+        .then(products => {
+            return user.createOrder()
+                .then(order => {
+                    return order.addProducts(products.map(product => {
+                        product.orderItem = { quantity: product.cartItem.quantity };
+                        console.log(product);
+                        return product;
+                    }))
+                })
+                .catch(error => console.log(error));
+        })
+        .then(result => {
+            res.redirect('/shop');
+        })
+        .catch(error => console.log(error));
 }
 
 exports.getProductsPage = (req, res, next) => {
