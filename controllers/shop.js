@@ -100,8 +100,10 @@ exports.deleteCart = (req, res, next) => {
 
 exports.postOrder = (req, res, next) => {
     const user = req.user;
+    let fetchedCart;
     user.getCart()
         .then(cart => {
+            fetchedCart = cart;
             return cart.getProducts();
         })
         .then(products => {
@@ -114,6 +116,9 @@ exports.postOrder = (req, res, next) => {
                     }))
                 })
                 .catch(error => console.log(error));
+        })
+        .then(() => {
+            return fetchedCart.setProducts(null);
         })
         .then(result => {
             res.redirect('/shop');
