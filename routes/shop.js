@@ -18,4 +18,6 @@ router.get('/products/details/:productId', shopController.getDetails);
 
 router.post('/orders/create', shopController.postOrder);
 
+router.get('/orders', shopController.getOrdersPage);
+
 module.exports = router;

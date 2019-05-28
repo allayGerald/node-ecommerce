@@ -129,3 +129,11 @@ exports.postOrder = (req, res, next) => {
 exports.getProductsPage = (req, res, next) => {
     res.render('shop/products', { pageTitle: 'Products', path: 'shop/products' });
 }
+
+exports.getOrdersPage = (req, res, next) => {
+    req.user.getOrders({include: ['products']})
+    .then(orders => {
+        res.render('shop/orders', { pageTitle: 'Orders', path: '/orders', orders: orders });
+    })
+    .catch(error => console.log(error));
+}
