@@ -127,7 +127,15 @@ exports.postOrder = (req, res, next) => {
 }
 
 exports.getProductsPage = (req, res, next) => {
-    res.render('shop/products', { pageTitle: 'Products', path: 'shop/products' });
+    Product.findAll()
+    .then(products =>{
+        res.render('shop/products', { 
+            pageTitle: 'Products', 
+            path: 'shop/products',
+            products: products
+         });
+    })
+    .catch(error => console.log(error));
 }
 
 exports.getOrdersPage = (req, res, next) => {
