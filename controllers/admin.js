@@ -2,8 +2,11 @@ const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/add-product',
-        { pageTitle: 'Add Product', path: 'admin/add-product' }
-    );
+        {
+            pageTitle: 'Add Product',
+            path: 'admin/add-product',
+            isLoggedIn: req.isLoggedIn
+        });
 }
 
 exports.postAddProduct = (req, res, next) => {
@@ -35,8 +38,12 @@ exports.getAdminProductsPage = (req, res, next) => {
         .getProducts()
         .then(products => {
             res.render('admin/products',
-                { pageTitle: 'Admin Products', products: products, path: 'admin/products' }
-            );
+                {
+                    pageTitle: 'Admin Products',
+                    products: products,
+                    path: 'admin/products',
+                    isLoggedIn: req.isLoggedIn
+                });
         })
         .catch(error => {
             console.log(error);
@@ -50,7 +57,8 @@ exports.getEditPage = (req, res, next) => {
             res.render('admin/edit-product', {
                 product: product,
                 pageTitle: 'Edit Product',
-                path: 'admin/products'
+                path: 'admin/products',
+                isLoggedIn: req.isLoggedIn
             })
         })
         .catch(error => console.log(error));

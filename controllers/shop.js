@@ -4,8 +4,12 @@ exports.getShopPage = (req, res, next) => {
     Product.findAll()
         .then(products => {
             res.render('shop/product-list',
-                { pageTitle: 'Shop', products: products, path: '/shop' }
-            );
+                {
+                    pageTitle: 'Shop',
+                    products: products,
+                    path: '/shop',
+                    isLoggedIn: req.isLoggedIn
+                });
         })
         .catch(err => {
             console.log(err)
@@ -19,7 +23,8 @@ exports.getDetails = (req, res, next) => {
             res.render('shop/product-details', {
                 product: product,
                 pageTitle: 'Product Details: ' + product.title,
-                path: '/shop'
+                path: '/shop',
+                isLoggedIn: req.isLoggedIn
             });
         })
         .catch(error => {
@@ -74,7 +79,8 @@ exports.getCartPage = (req, res, next) => {
         .then(products => {
             res.render('shop/cart', {
                 pageTitle: 'Cart', products: products,
-                path: 'shop/cart'
+                path: 'shop/cart',
+                isLoggedIn: req.isLoggedIn
             });
         })
         .catch(error => console.log(error));
@@ -128,20 +134,26 @@ exports.postOrder = (req, res, next) => {
 
 exports.getProductsPage = (req, res, next) => {
     Product.findAll()
-    .then(products =>{
-        res.render('shop/products', { 
-            pageTitle: 'Products', 
-            path: 'shop/products',
-            products: products
-         });
-    })
-    .catch(error => console.log(error));
+        .then(products => {
+            res.render('shop/products', {
+                pageTitle: 'Products',
+                path: 'shop/products',
+                products: products,
+                isLoggedIn: req.isLoggedIn
+            });
+        })
+        .catch(error => console.log(error));
 }
 
 exports.getOrdersPage = (req, res, next) => {
-    req.user.getOrders({include: ['products']})
-    .then(orders => {
-        res.render('shop/orders', { pageTitle: 'Orders', path: '/orders', orders: orders });
-    })
-    .catch(error => console.log(error));
+    req.user.getOrders({ include: ['products'] })
+        .then(orders => {
+            res.render('shop/orders', {
+                pageTitle: 'Orders',
+                path: '/orders',
+                orders: orders,
+                isLoggedIn: req.isLoggedIn
+            });
+        })
+        .catch(error => console.log(error));
 }
