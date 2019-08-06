@@ -17,8 +17,10 @@
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.2",
+    "express-session": "^1.16.2",
     "mysql2": "^1.6.5",
     "pug": "^2.0.3",
-    "sequelize": "^5.8.6"
+    "sequelize": "^6.0.0",
+    "sequelstore-connect": "^1.1.5"
   }
 }
