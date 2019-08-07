@@ -1,8 +1,7 @@
 const User = require('../models/user');
 
 exports.getLoginPage = (req, res, next) => {
-   const isLoggedIn = req.get('Cookie');
-   console.log(isLoggedIn);
+   console.log(req.session.isLoggedIn);
     res.render('auth/login', {
         pageTitle: 'User Login : ',
         path: 'login',

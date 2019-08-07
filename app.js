@@ -6,6 +6,27 @@ const path = require('path');
 const app = express();
 
 const sequelize = require('./util/database');
+
+// session config
+
+const session = require('express-session');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
+const sessionStore =  new SequelizeStore({
+    db: sequelize
+});
+
+
+app.use(session({
+    secret: 'i1GOsABn1Nxd27J9zi5ovo1tvEMCiC0w',
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore
+}));
+
+sessionStore.sync();
+
+
 const Product = require('./models/product');
 const User = require('./models/user');
 const Cart = require('./models/cart');
@@ -40,18 +61,13 @@ app.use(shopRoutes);
 
 app.use(errorController.get404Page);
 
-// Product.belongsTo(User, {
-//     constraints: true,
-//      onDelete: 'CASCADE', 
-//      foreignKey: 'userId'
-//     });
 User.hasMany(Product);
 User.hasOne(Cart);
 Cart.belongsTo(User);
-Cart.belongsToMany(Product, {through: CartItem});
+Cart.belongsToMany(Product, { through: CartItem });
 Order.belongsTo(User);
 User.hasMany(Order);
-Order.belongsToMany(Product, {through: OrderItem});
+Order.belongsToMany(Product, { through: OrderItem });
 
 sequelize.sync()
     .then(result => {
@@ -64,8 +80,8 @@ sequelize.sync()
         return user;
     })
     .then(user => {
-    //    return user.createCart(); //create cart for thus user
-    app.listen(3000);
+        //    return user.createCart(); //create cart for thus user
+        app.listen(3000);
     })
     // .then(cart => {
     //     app.listen(3000);
