@@ -8,6 +8,18 @@ exports.getLoginPage = (req, res, next) => {
   });
 }
 
+exports.getSignupPage = (req, res, next) => {
+  res.render('auth/signup', {
+    pageTitle: 'Sign Up', 
+    path: 'signup', 
+    isLoggedIn: false
+  });
+}
+
+exports.postSignup = (req, res, next) => {
+  
+}
+
 exports.postLogin = (req, res, next) => {
   User.findByPk(1)
     .then(user => {
