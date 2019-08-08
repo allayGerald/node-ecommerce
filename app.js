@@ -12,7 +12,7 @@ const sequelize = require('./util/database');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
-const sessionStore =  new SequelizeStore({
+const sessionStore = new SequelizeStore({
     db: sequelize
 });
 
@@ -43,14 +43,27 @@ const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
 
 app.use((req, res, next) => {
-    User.findOne()
+    const user = req.session.user;
+    if (!user) {
+        return next();
+    }
+
+    User.findByPk(user.id)
         .then(user => {
             req.user = user;
             next();
         })
-        .catch(error => {
-            console.log(error);
-        })
+        .catch(error => console.log(error)
+        );
+
+    // console.log(user);
+    // if (user === undefined) {
+    //     req.isLoggedIn = false;
+    // } else {
+    //     req.isLoggedIn = true;
+    //     console.log(user);
+    // }
+    // next();
 });
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -69,23 +82,25 @@ Order.belongsTo(User);
 User.hasMany(Order);
 Order.belongsToMany(Product, { through: OrderItem });
 
-sequelize.sync()
-    .then(result => {
-        return User.findAll({ limit: 1 });
-    })
-    .then(user => {
-        if (user.length === 0) {
-            User.create({ name: "Gerald", password: "!@#", email: "g@mail.com" });
-        }
-        return user;
-    })
-    .then(user => {
-        //    return user.createCart(); //create cart for thus user
-        app.listen(3000);
-    })
-    // .then(cart => {
-    //     app.listen(3000);
-    // })
-    .catch(error => {
-        console.log(error);
-    });
+app.listen(3000);
+
+// sequelize.sync()
+//     .then(result => {
+//         return User.findAll({ limit: 1 });
+//     })
+//     .then(user => {
+//         if (user.length === 0) {
+//             User.create({ name: "Gerald", password: "!@#", email: "g@mail.com" });
+//         }
+//         return user;
+//     })
+//     .then(user => {
+//         //    return user.createCart(); //create cart for thus user
+//         app.listen(3000);
+//     })
+//     // .then(cart => {
+//     //     app.listen(3000);
+//     // })
+//     .catch(error => {
+//         console.log(error);
+//     });
