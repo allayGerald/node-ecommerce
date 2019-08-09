@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Cart = require('../models/cart');
 
 exports.getLoginPage = (req, res, next) => {
   res.render('auth/login', {
@@ -28,10 +29,15 @@ exports.postSignup = (req, res, next) => {
       password: password,
       name: name
     })
-      .then(() => {
-        console.log('success');
-        res.redirect('/login');
+      .then((user) => {
+        return user.createCart();
+
       })
+      .then(
+        () => { 
+          res.redirect('/login'); 
+        }
+      )
       .catch(error => console.log(error));
   } else {
     console.log('passord mismatch');
