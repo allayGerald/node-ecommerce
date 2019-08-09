@@ -1,6 +1,10 @@
 const Product = require('../models/product');
+const User = require('../models/user');
 
 exports.getAddProduct = (req, res, next) => {
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login')
+    }
     res.render('admin/add-product',
         {
             pageTitle: 'Add Product',
@@ -10,13 +14,16 @@ exports.getAddProduct = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login')
+    }
     const title = req.body.title;
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
-    const userId = req.user.id;
+    const userId = req.session.id;
 
-    req.user
+    req.session.user
         .createProduct({
             title: title,
             description: description,
@@ -34,7 +41,10 @@ exports.postAddProduct = (req, res, next) => {
 
 
 exports.getAdminProductsPage = (req, res, next) => {
-    req.user
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login')
+    }
+    req.session.user
         .getProducts()
         .then(products => {
             res.render('admin/products',
@@ -51,6 +61,9 @@ exports.getAdminProductsPage = (req, res, next) => {
 }
 
 exports.getEditPage = (req, res, next) => {
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login')
+    }
     const prodId = req.params.productId;
     Product.findByPk(prodId)
         .then(product => {
@@ -65,6 +78,9 @@ exports.getEditPage = (req, res, next) => {
 }
 
 exports.updateProduct = (req, res, next) => {
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login')
+    }
     const productId = req.params.productId;
     const title = req.body.title;
     const imageUrl = req.body.imageUrl;
@@ -87,6 +103,9 @@ exports.updateProduct = (req, res, next) => {
 }
 
 exports.deleteProduct = (req, res, next) => {
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login')
+    }
     const productId = req.params.productId;
 
     Product.destroy({

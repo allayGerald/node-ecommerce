@@ -33,7 +33,10 @@ exports.getDetails = (req, res, next) => {
 }
 
 exports.postCart = (req, res, next) => {
-    const user = req.user;
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login')
+    }
+    const user = req.session.user.id;
     const productId = req.body.productId;
     let fetchedCart;
     let newQuantity = 1;
@@ -71,7 +74,12 @@ exports.postCart = (req, res, next) => {
 }
 
 exports.getCartPage = (req, res, next) => {
-    req.user.getCart()
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login');
+    }
+
+    const user = req.session.user;
+    user.getCart()
         .then(cart => {
             return cart.getProducts();
 
@@ -87,7 +95,10 @@ exports.getCartPage = (req, res, next) => {
 }
 
 exports.deleteCart = (req, res, next) => {
-    const user = req.user;
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login')
+    }
+    const user = req.session.user.id;
     const productId = req.body.productId;
 
     user.getCart()
@@ -105,7 +116,10 @@ exports.deleteCart = (req, res, next) => {
 }
 
 exports.postOrder = (req, res, next) => {
-    const user = req.user;
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login')
+    }
+    const user = req.session.user.id;
     let fetchedCart;
     user.getCart()
         .then(cart => {
@@ -146,6 +160,9 @@ exports.getProductsPage = (req, res, next) => {
 }
 
 exports.getOrdersPage = (req, res, next) => {
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login')
+    }
     req.user.getOrders({ include: ['products'] })
         .then(orders => {
             res.render('shop/orders', {
