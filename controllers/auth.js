@@ -10,14 +10,33 @@ exports.getLoginPage = (req, res, next) => {
 
 exports.getSignupPage = (req, res, next) => {
   res.render('auth/signup', {
-    pageTitle: 'Sign Up', 
-    path: 'signup', 
+    pageTitle: 'Sign Up',
+    path: 'signup',
     isLoggedIn: false
   });
 }
 
 exports.postSignup = (req, res, next) => {
-  
+  const name = req.body.name;
+  const email = req.body.email;
+  const password = req.body.password;
+  const passwordConfirm = req.body.passwordConfirm;
+
+  if (password === passwordConfirm) {
+    User.create({
+      email: email,
+      password: password,
+      name: name
+    })
+      .then(() => {
+        console.log('success');
+        res.redirect('/login');
+      })
+      .catch(error => console.log(error));
+  } else {
+    console.log('passord mismatch');
+  }
+
 }
 
 exports.postLogin = (req, res, next) => {
