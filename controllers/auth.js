@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Cart = require('../models/cart');
+const bcrypt = require('bcryptjs');
 
 exports.getLoginPage = (req, res, next) => {
   res.render('auth/login', {
@@ -24,22 +25,26 @@ exports.postSignup = (req, res, next) => {
   const passwordConfirm = req.body.passwordConfirm;
 
   if (password === passwordConfirm) {
-    User.create({
-      email: email,
-      password: password,
-      name: name
-    })
+    bcrypt.hash(password, 12)
+      .then((hashedPassword) => {
+        return User.create({
+          email: email,
+          password: hashedPassword,
+          name: name
+        })
+      })
       .then((user) => {
         return user.createCart();
 
       })
       .then(
-        () => { 
-          res.redirect('/login'); 
+        () => {
+          res.redirect('/login');
         }
       )
       .catch(error => console.log(error));
   } else {
+    res.redirect('/signup');
     console.log('passord mismatch');
   }
 
