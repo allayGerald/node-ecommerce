@@ -42,29 +42,29 @@ const authRoutes = require('./routes/auth');
 
 const errorController = require('./controllers/error');
 
-app.use((req, res, next) => {
-    const user = req.session.user;
-    if (!user) {
-        return next();
-    }
+// app.use((req, res, next) => {
+//     const user = req.session.user;
+//     if (!user) {
+//         return next();
+//     }
 
-    User.findByPk(user.id)
-        .then(user => {
-            req.user = user;
-            next();
-        })
-        .catch(error => console.log(error)
-        );
+//     User.findByPk(user.id)
+//         .then(user => {
+//             req.user = user;
+//             next();
+//         })
+//         .catch(error => console.log(error)
+//         );
 
-    // console.log(user);
-    // if (user === undefined) {
-    //     req.isLoggedIn = false;
-    // } else {
-    //     req.isLoggedIn = true;
-    //     console.log(user);
-    // }
-    // next();
-});
+//     // console.log(user);
+//     // if (user === undefined) {
+//     //     req.isLoggedIn = false;
+//     // } else {
+//     //     req.isLoggedIn = true;
+//     //     console.log(user);
+//     // }
+//     // next();
+// });
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 

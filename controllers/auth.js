@@ -42,7 +42,10 @@ exports.postSignup = (req, res, next) => {
           res.redirect('/login');
         }
       )
-      .catch(error => console.log(error));
+      .catch((error) => {
+        res.redirect('/signup');
+        console.log(error);
+      });
   } else {
     res.redirect('/signup');
     console.log('passord mismatch');
@@ -51,12 +54,32 @@ exports.postSignup = (req, res, next) => {
 }
 
 exports.postLogin = (req, res, next) => {
-  User.findByPk(1)
-    .then(user => {
-      req.session.isLoggedIn = true;
-      req.session.user = user;
-      res.redirect('/');
-    })
+  const email = req.body.email;
+  const password = req.body.password;
+
+  User.findOne({
+    where: { email: email }
+  }).then(user => {
+    if (!user) {
+      return res.redirect('/login');
+    }
+
+    bcrypt.compare(password, user.password)
+      .then(doMatch => {
+        if (doMatch) {
+          req.session.isLoggedIn = true;
+          req.session.user = user;
+          return req.session.save(error => {
+            return res.redirect('/');
+          });
+        }
+        return res.redirect('/login');
+      })
+      .catch(error => {
+        console.log(error);
+        return res.redirect('/login');
+      })
+  })
 };
 
 exports.postLogout = (req, res, next) => {
