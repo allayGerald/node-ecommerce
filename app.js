@@ -16,6 +16,8 @@ const sessionStore = new SequelizeStore({
     db: sequelize
 });
 
+const flash = require('connect-flash');
+
 const app = express();
 
 const csrfProtection = csrf();
@@ -40,13 +42,16 @@ const errorController = require('./controllers/error');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// session connect before routes and bodyparser
 app.use(session({
     secret: 'i1GOsABn1Nxd27J9zi5ovo1tvEMCiC0w',
     resave: false,
     saveUninitialized: false,
     store: sessionStore
 }));
+// call these after you initialize session
 app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
     if (!req.session.user) {

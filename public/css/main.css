@@ -130,3 +130,19 @@ main {
 .image img {
   height: 100%;
 }
+
+.user-message {
+  margin: auto;
+  width: 90%;
+  padding: 1rem;
+  border-radius: 3px;
+  border: 1px solid rgb(63, 62, 62);
+  background: whitesmoke;
+  text-align: center;
+}
+
+.user-message--error {
+  background: rgb(243, 86, 86);
+  border-color: red;
+  color: white;
+}

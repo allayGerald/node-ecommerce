@@ -6,7 +6,7 @@ exports.getLoginPage = (req, res, next) => {
   res.render('auth/login', {
     pageTitle: 'User Login : ',
     path: 'login',
-    isLoggedIn: false
+    errorMessage: req.flash('error')
   });
 }
 
@@ -61,6 +61,7 @@ exports.postLogin = (req, res, next) => {
     where: { email: email }
   }).then(user => {
     if (!user) {
+      req.flash('error', 'Invalid Email or password');
       return res.redirect('/login');
     }
 
