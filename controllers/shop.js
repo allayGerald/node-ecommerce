@@ -7,8 +7,7 @@ exports.getShopPage = (req, res, next) => {
                 {
                     pageTitle: 'Shop',
                     products: products,
-                    path: '/shop',
-                    isLoggedIn: req.session.isLoggedIn
+                    path: '/shop'
                 });
         })
         .catch(err => {
@@ -23,8 +22,7 @@ exports.getDetails = (req, res, next) => {
             res.render('shop/product-details', {
                 product: product,
                 pageTitle: 'Product Details: ' + product.title,
-                path: '/shop',
-                isLoggedIn: req.session.isLoggedIn
+                path: '/shop'
             });
         })
         .catch(error => {
@@ -33,8 +31,8 @@ exports.getDetails = (req, res, next) => {
 }
 
 exports.postCart = (req, res, next) => {
-    
-    const user = req.session.user.id;
+
+    const user = req.user;
     const productId = req.body.productId;
     let fetchedCart;
     let newQuantity = 1;
@@ -73,7 +71,7 @@ exports.postCart = (req, res, next) => {
 
 exports.getCartPage = (req, res, next) => {
 
-    const user = req.session.user;
+    const user = req.user;
     user.getCart()
         .then(cart => {
             return cart.getProducts();
@@ -90,7 +88,7 @@ exports.getCartPage = (req, res, next) => {
 }
 
 exports.deleteCart = (req, res, next) => {
-    const user = req.session.user.id;
+    const user = req.user;
     const productId = req.body.productId;
 
     user.getCart()
@@ -108,9 +106,8 @@ exports.deleteCart = (req, res, next) => {
 }
 
 exports.postOrder = (req, res, next) => {
-    const user = req.session.user.id;
     let fetchedCart;
-    user.getCart()
+    req.user.getCart()
         .then(cart => {
             fetchedCart = cart;
             return cart.getProducts();
@@ -141,8 +138,7 @@ exports.getProductsPage = (req, res, next) => {
             res.render('shop/products', {
                 pageTitle: 'Products',
                 path: 'shop/products',
-                products: products,
-                isLoggedIn: req.session.isLoggedIn
+                products: products
             });
         })
         .catch(error => console.log(error));
@@ -154,8 +150,7 @@ exports.getOrdersPage = (req, res, next) => {
             res.render('shop/orders', {
                 pageTitle: 'Orders',
                 path: '/orders',
-                orders: orders,
-                isLoggedIn: req.session.isLoggedIn
+                orders: orders
             });
         })
         .catch(error => console.log(error));

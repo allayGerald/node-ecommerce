@@ -26,6 +26,7 @@
                             <a class="btn" href="products/details/<%= product.id %>">Details</a>
                             <% if (isLoggedIn === true) { %>
                             <form  action="/shop/cart" class="add-cart" method="POST">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <input type="hidden" 
                                     name="productId"
                                      value="<%= product.id %>">

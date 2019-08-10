@@ -3,8 +3,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-const app = express();
-
 const sequelize = require('./util/database');
 
 // session config
@@ -12,20 +10,17 @@ const sequelize = require('./util/database');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
+const csrf = require('csurf');
+
 const sessionStore = new SequelizeStore({
     db: sequelize
 });
 
+const app = express();
 
-app.use(session({
-    secret: 'i1GOsABn1Nxd27J9zi5ovo1tvEMCiC0w',
-    resave: false,
-    saveUninitialized: false,
-    store: sessionStore
-}));
+const csrfProtection = csrf();
 
-sessionStore.sync();
-
+// sessionStore.sync();
 
 const Product = require('./models/product');
 const User = require('./models/user');
@@ -42,31 +37,34 @@ const authRoutes = require('./routes/auth');
 
 const errorController = require('./controllers/error');
 
-// app.use((req, res, next) => {
-//     const user = req.session.user;
-//     if (!user) {
-//         return next();
-//     }
-
-//     User.findByPk(user.id)
-//         .then(user => {
-//             req.user = user;
-//             next();
-//         })
-//         .catch(error => console.log(error)
-//         );
-
-//     // console.log(user);
-//     // if (user === undefined) {
-//     //     req.isLoggedIn = false;
-//     // } else {
-//     //     req.isLoggedIn = true;
-//     //     console.log(user);
-//     // }
-//     // next();
-// });
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+    secret: 'i1GOsABn1Nxd27J9zi5ovo1tvEMCiC0w',
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore
+}));
+app.use(csrfProtection);
+
+app.use((req, res, next) => {
+    if (!req.session.user) {
+        return next();
+    }
+    User.findByPk(req.session.user.id)
+        .then(user => {
+            req.user = user;
+            next();
+        })
+        .catch(error => console.log(error))
+});
+
+app.use((req, res, next) => {
+    res.locals.isLoggedIn = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+  });
 
 app.use(authRoutes);
 app.use(adminRoutes);
@@ -83,24 +81,3 @@ User.hasMany(Order);
 Order.belongsToMany(Product, { through: OrderItem });
 
 app.listen(3000);
-
-// sequelize.sync()
-//     .then(result => {
-//         return User.findAll({ limit: 1 });
-//     })
-//     .then(user => {
-//         if (user.length === 0) {
-//             User.create({ name: "Gerald", password: "!@#", email: "g@mail.com" });
-//         }
-//         return user;
-//     })
-//     .then(user => {
-//         //    return user.createCart(); //create cart for thus user
-//         app.listen(3000);
-//     })
-//     // .then(cart => {
-//     //     app.listen(3000);
-//     // })
-//     .catch(error => {
-//         console.log(error);
-//     });

@@ -4,6 +4,7 @@
 <%- include('../includes/navigation.ejs')%>
     <main>
         <form class="product-form" action="/product/update-product/<%= product.id%>" method="POST">
+              <input name="_csrf" type="hidden" value="<%= csrfToken%>">
             <div class="form-control">
                 <label for="title">Title</label>
                 <input type="text" name="title" value="<%= product.title%>" id="title">

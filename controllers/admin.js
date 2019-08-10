@@ -4,8 +4,7 @@ exports.getAddProduct = (req, res, next) => {
     res.render('admin/add-product',
         {
             pageTitle: 'Add Product',
-            path: 'admin/add-product',
-            isLoggedIn: req.session.isLoggedIn
+            path: 'admin/add-product'
         });
 }
 
@@ -14,9 +13,9 @@ exports.postAddProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
-    const userId = req.session.id;
+    const user = req.user;
 
-    req.session.user
+    user
         .createProduct({
             title: title,
             description: description,
@@ -34,15 +33,14 @@ exports.postAddProduct = (req, res, next) => {
 
 
 exports.getAdminProductsPage = (req, res, next) => {
-    req.session.user
+    req.user
         .getProducts()
         .then(products => {
             res.render('admin/products',
                 {
                     pageTitle: 'Admin Products',
                     products: products,
-                    path: 'admin/products',
-                    isLoggedIn: req.session.isLoggedIn
+                    path: 'admin/products'
                 });
         })
         .catch(error => {
@@ -57,8 +55,7 @@ exports.getEditPage = (req, res, next) => {
             res.render('admin/edit-product', {
                 product: product,
                 pageTitle: 'Edit Product',
-                path: 'admin/products',
-                isLoggedIn: req.session.isLoggedIn
+                path: 'admin/products'
             })
         })
         .catch(error => console.log(error));

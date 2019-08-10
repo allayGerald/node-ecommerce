@@ -4,6 +4,8 @@ const router = express.Router();
 
 const shopController = require('../controllers/shop');
 
+const isAuth = require('../middlewares/is-auth');
+
 router.get('/', shopController.getShopPage);
 
 router.get('/shop/cart', isAuth, shopController.getCartPage);
