@@ -4,6 +4,9 @@
 <%- include('../includes/navigation.ejs')%>
  <main>
         <form class="product-form" action="/signup" method="POST">
+         <% if(errorMessage.length !== 0) {%>
+ <div class="user-message user-message--error"><%= errorMessage %></div>
+ <% } %>
             <div class="form-control">
                 <label for="name">Name</label>
                 <input type="text" name="name" id="name">
