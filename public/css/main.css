@@ -134,7 +134,7 @@ main {
 .user-message {
   margin: auto;
   width: 90%;
-  padding: 1rem;
+  padding: 0.5rem;
   border-radius: 3px;
   border: 1px solid rgb(63, 62, 62);
   background: whitesmoke;
@@ -142,7 +142,7 @@ main {
 }
 
 .user-message--error {
-  background: rgb(243, 86, 86);
+  background: rgb(240, 115, 115);
   border-color: red;
   color: white;
 }
