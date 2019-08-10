@@ -107,7 +107,9 @@ exports.deleteCart = (req, res, next) => {
 
 exports.postOrder = (req, res, next) => {
     let fetchedCart;
-    req.user.getCart()
+    const user = req.user;
+    
+    user.getCart()
         .then(cart => {
             fetchedCart = cart;
             return cart.getProducts();
