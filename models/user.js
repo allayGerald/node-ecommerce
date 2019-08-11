@@ -14,7 +14,8 @@ const User = sequelize.define('user', {
         allowNull: false
     },
     password: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
     },
     email: {
         type: Sequelize.STRING,
@@ -29,6 +30,12 @@ const User = sequelize.define('user', {
             args: true,
             msg: "The email has already been taken"
         }
+    },
+    resetToken: {
+        type: Sequelize.STRING
+    },
+    tokenExpiration: {
+        type: Sequelize.DATE
     }
 });
 
