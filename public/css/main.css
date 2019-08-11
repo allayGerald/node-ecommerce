@@ -146,3 +146,9 @@ main {
   border-color: red;
   color: white;
 }
+
+.user-message--success {
+  background: green;
+  border-color: rgb(152, 248, 8);
+  color: white;
+}

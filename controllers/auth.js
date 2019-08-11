@@ -2,13 +2,14 @@ const User = require('../models/user');
 const Cart = require('../models/cart');
 const bcrypt = require('bcryptjs');
 const mailer = require('nodemailer');
+const crypto = require('crypto');
 
 let transport = mailer.createTransport({
   host: 'smtp.mailtrap.io',
   port: 2525,
   auth: {
-     user: '9cba8bde24f53e',
-     pass: 'e2347b92fea4f6'
+    user: '9cba8bde24f53e',
+    pass: 'e2347b92fea4f6'
   }
 });
 
@@ -16,7 +17,8 @@ exports.getLoginPage = (req, res, next) => {
   res.render('auth/login', {
     pageTitle: 'User Login : ',
     path: 'login',
-    errorMessage: req.flash('error')
+    errorMessage: req.flash('error'),
+    successMessage: req.flash('success')
   });
 }
 
@@ -111,21 +113,90 @@ exports.postLogout = (req, res, next) => {
   });
 };
 
+exports.getForgotPassword = (req, res, next) => {
+  res.render('auth/forgot-password', {
+    pageTitle: 'Forgot Password ?',
+    path: 'forgot-password',
+    errorMessage: req.flash('error'),
+    successMessage: req.flash('success')
+  });
+}
+
+exports.postForgotPassword = (req, res, next) => {
+  const email = req.body.email;
+
+  User.findOne({
+    where: { email: email }
+  })
+    .then(user => {
+      if (!user) {
+        req.flash('error', 'There\'s No record of email you provided');
+        return res.redirect('/forgot-password');
+      }
+
+      crypto.randomBytes(32, (error, buffer) => {
+        if (error) {
+          console.log(error);
+          return req.redirect('/forgot-password');
+        }
+
+        const token = buffer.toString('hex');
+
+        user.update({
+          resetToken: token,
+          tokenExpiration: Date.now() + 3600
+        })
+          .then(result => {
+            req.flash('success', 'Password Reset link sent to your email');
+            res.redirect('/forgot-password');
+            sendPasswordRecoveyMail(email, token);
+          })
+          .catch(error => {
+            console.log(error);
+            req.flash('error', 'Error creating Token, Please try again');
+            return req.redirect('/forgot-password');
+          })
+      });
+    })
+}
+
 const sendSignUpMail = (email) => {
   const message = {
-    from: 'no-reply@shop.com', 
-    to: email,        
-    subject: 'SignUp Sucess', 
+    from: 'no-reply@shop.com',
+    to: email,
+    subject: 'SignUp Sucess',
     text: 'You have successfully Signed Up!' // Plain text body
   };
-  
-  transport.sendMail(message, function(err, info) {
-  if (err) {
-    console.log(err)
-  } else {
-    console.log(info);
-  }
-});
+
+  transport.sendMail(message, function (err, info) {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log(info);
+    }
+  });
+}
+
+const sendPasswordRecoveyMail = (email, token) => {
+  const message = {
+    from: 'no-reply@shop.com',
+    to: email,
+    subject: 'Password recovery link',
+    html: `
+        <p>Sorry to hear that you lost your password</p>
+        <p>Please click this <a href="http://localhost:3000/reset/${token}"> link</a> to reset your password, You can ignore this message
+        If you did'nt ask for password recovery</p>
+    `
+  };
+
+  transport.sendMail(message, function (err, info) {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log(info);
+    }
+  });
+  return;
 }
 
 
