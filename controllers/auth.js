@@ -4,6 +4,9 @@ const bcrypt = require('bcryptjs');
 const mailer = require('nodemailer');
 const crypto = require('crypto');
 
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 let transport = mailer.createTransport({
   host: 'smtp.mailtrap.io',
   port: 2525,
@@ -144,7 +147,7 @@ exports.postForgotPassword = (req, res, next) => {
 
         user.update({
           resetToken: token,
-          tokenExpiration: Date.now() + 3600
+          tokenExpiration: Date.now() + 3600000 // date i n milliseconds
         })
           .then(result => {
             req.flash('success', 'Password Reset link sent to your email');
@@ -158,6 +161,72 @@ exports.postForgotPassword = (req, res, next) => {
           })
       });
     })
+}
+
+exports.getResetPassword = (req, res, next) => {
+  const token = req.params.token;
+
+  User.findOne({
+    where: {
+      resetToken: token,
+      tokenExpiration: { [Op.gt]: Date.now() }
+    }
+  })
+    .then(user => {
+      if (!user) {
+        req.flash('error', 'Your token is invalid, try requesting new link');
+        return res.redirect('/forgot-password');
+      }
+
+      res.render('auth/password-reset', {
+        pageTitle: 'Reset Password',
+        path: 'reset',
+        userId: user.id,
+        token: token,
+        errorMessage: req.flash('error'),
+        successMessage: req.flash('success')
+      });
+    })
+}
+
+exports.postResetPassword = (req, res, next) => {
+  const userId = req.body.userId;
+  const resetToken = req.body.resetToken;
+
+  bcrypt.hash(req.body.password, 12)
+    .then(hashedPassword => {
+      User.update({
+        password: hashedPassword
+      },
+        {
+          where: {
+            id: userId,
+            resetToken: resetToken
+          }
+        })
+        .then(user => {
+          User.update({
+            resetToken: null,
+            tokenExpiration: null
+          }, {
+            where: {
+              id: user
+            }
+          })
+            .then(result => {
+              req.flash('success', 'You have successfully recovered your password');
+              return res.redirect('/login');
+            });
+        })
+        .catch(error => {
+          console.log(error);
+          req.flash('error', 'Error');
+          return res.redirect('/login');
+        });
+    })
+    .catch(error => {
+      console.log(error);
+    });
 }
 
 const sendSignUpMail = (email) => {
