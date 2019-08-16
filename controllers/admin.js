@@ -50,7 +50,14 @@ exports.getAdminProductsPage = (req, res, next) => {
 
 exports.getEditPage = (req, res, next) => {
     const prodId = req.params.productId;
-    Product.findByPk(prodId)
+    const userId = req.user.id;
+
+    Product.findOne({
+        where: {
+            id: prodId,
+            userId: userId,
+        }
+    })
         .then(product => {
             res.render('admin/edit-product', {
                 product: product,
@@ -67,6 +74,7 @@ exports.updateProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
+    const userId = req.user.id;
     Product.update({
         title: title,
         description: description,
@@ -74,7 +82,8 @@ exports.updateProduct = (req, res, next) => {
         price: price
     }, {
             where: {
-                id: productId
+                id: productId,
+                userId: userId
             }
         })
         .then(() => {
@@ -85,10 +94,12 @@ exports.updateProduct = (req, res, next) => {
 
 exports.deleteProduct = (req, res, next) => {
     const productId = req.params.productId;
+    const userId = req.user.id;
 
     Product.destroy({
         where: {
-            id: productId
+            id: productId,
+            userId: userId
         }
     }).then(() => {
         res.redirect('/admin/products');
