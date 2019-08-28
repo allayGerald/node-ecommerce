@@ -1,28 +1,43 @@
 <%- include('../includes/header.ejs')%>
-    <link rel="stylesheet" href="/css/forms.css">
-    <link rel="stylesheet" href="/css/product.css">
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/product.css">
 <%- include('../includes/navigation.ejs')%>
-    <main>
-        <form class="product-form" action="/admin/add-product" method="POST">
-         <input name="_csrf" type="hidden" value="<%= csrfToken%>">
-            <div class="form-control">
-                <label for="title">Title</label>
-                <input type="text" name="title" id="title">
-            </div>
-            <div class="form-control">
-                <label for="imageUrl">Image URL</label>
-                <input type="text" name="imageUrl" id="imageUrl">
-            </div>
-            <div class="form-control">
-                <label for="price">Price</label>
-                <input type="number" name="price" id="price">
-            </div>
-            <div class="form-control">
-                <label for="description">Description</label>
-                <textarea name="description" rows="8" id="description"></textarea>
-            </div>
+<main>
+    <form class="product-form" action="/admin/add-product" method="POST">
+        <% 
+        let titleError = '';
+                let imageUrlError = '';
+                let priceError = '';
+                if (errors !== null) {
+                for (const error of errors) { 
+                    console.log(error);
+                    titleError = error.param === 'title' ? error.msg : '';
+                    imageUrlError = error.param === 'imageUrl' ? error.msg : '';
+                    priceError = error.param === 'price' ? error.msg : '';
+                 }
+            } %>
+        <input name="_csrf" type="hidden" value="<%= csrfToken%>">
+        <div class="form-control">
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title" value="<%= oldInputs.title %>" required>
+            <small class="text-red"><%= titleError%></small>
+        </div>
+        <div class="form-control">
+            <label for="imageUrl">Image URL</label>
+            <input type="text" name="imageUrl" id="imageUrl" value="<%= oldInputs.imageUrl %>" required>
+            <small class="text-red"><%= imageUrlError%></small>
+        </div>
+        <div class="form-control">
+            <label for="price">Price</label>
+            <input type="number" name="price" id="price" value="<%= oldInputs.price %>" required>
+            <small class="text-red"><%= priceError%></small>
+        </div>
+        <div class="form-control">
+            <label for="description">Description</label>
+            <textarea name="description" rows="8" id="description"></textarea>
+        </div>
 
-            <button class="btn" type="submit">Add Product</button>
-        </form>
-    </main>
+        <button class="btn" type="submit">Add Product</button>
+    </form>
+</main>
 <%- include('../includes/footer.ejs')%>

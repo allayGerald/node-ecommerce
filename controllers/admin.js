@@ -1,10 +1,13 @@
 const Product = require('../models/product');
+const { validationResult } = require('express-validator');
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/add-product',
         {
             pageTitle: 'Add Product',
-            path: 'admin/add-product'
+            path: 'admin/add-product',
+            oldInputs: {},
+            errors: null
         });
 }
 
@@ -14,6 +17,20 @@ exports.postAddProduct = (req, res, next) => {
     const description = req.body.description;
     const price = req.body.price;
     const user = req.user;
+
+    const errors = validationResult(req);
+console.log(errors.array()[0]);
+    if (!errors.isEmpty()) {
+        return res.status(422).render('admin/add-product',
+            {
+                pageTitle: 'Add Product',
+                path: 'admin/add-product',
+                oldInputs: {
+                    title, imageUrl, description, price, user
+                },
+                errors: errors.array()
+            });
+    }
 
     user
         .createProduct({
@@ -62,7 +79,8 @@ exports.getEditPage = (req, res, next) => {
             res.render('admin/edit-product', {
                 product: product,
                 pageTitle: 'Edit Product',
-                path: 'admin/products'
+                path: 'admin/products',
+                errors: null
             })
         })
         .catch(error => console.log(error));
@@ -75,6 +93,21 @@ exports.updateProduct = (req, res, next) => {
     const description = req.body.description;
     const price = req.body.price;
     const userId = req.user.id;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors);
+        return res.status(422).render('admin/edit-product',
+            {
+                pageTitle: 'Edit Product',
+                path: 'admin/products',
+                product: {
+                    title, imageUrl, description, price, userId, id: productId
+                },
+                errors: errors.array()
+            });
+    }
+
     Product.update({
         title: title,
         description: description,
