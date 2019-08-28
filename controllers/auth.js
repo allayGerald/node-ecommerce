@@ -74,7 +74,8 @@ exports.postSignup = (req, res, next) => {
     })
     .then(
       () => {
-        sendSignUpMail(email);
+        // sendSignUpMail(email);
+        req.flash('success', 'Signed up successfully');
         res.redirect('/login');
       }
     )
@@ -294,18 +295,6 @@ const sendPasswordRecoveyMail = (email, token) => {
     }
   });
   return;
-}
-
-const postLoginRedirect = (email, password) => {
-  return res.status(422).render('auth/login', {
-    pageTitle: 'User Login : ',
-    path: 'login',
-    errorMessage: 'Invalid Email or password',
-    successMessage: req.flash('success'),
-    oldInputs: {
-      email, password
-    }
-  });
 }
 
 

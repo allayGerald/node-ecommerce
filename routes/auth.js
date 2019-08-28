@@ -9,28 +9,30 @@ const authController = require('../controllers/auth');
 router.get('/login', authController.getLoginPage);
 router.post('/login', check('email').isEmail(), authController.postLogin);
 router.post('/logout',
- [
-     body('email').isEmail().withMessage('Please Enter valid email')
- ],
+    [
+        body('email').isEmail().withMessage('Please Enter valid email').normalizeEmail(),
+        body('password').trim()
+    ],
     authController.postLogout
-    );
+);
 router.get('/signup', authController.getSignupPage);
 router.post('/signup',
     [
-        check('email').isEmail().withMessage('Please enter valid email').custom((value, { req }) => {
-            return User.findOne({
-                where: {
-                    email: value
-                }
-            })
-                .then(user => {
-                    if (user) {
-                        return Promise.reject('Email already in use');
+        check('email').trim().isEmail().withMessage('Please enter valid email')
+            .normalizeEmail().custom((value, { req }) => {
+                return User.findOne({
+                    where: {
+                        email: value
                     }
-                });
-        }),
-        body('password', 'Password should be 6 characters long Minimum').isLength({ min: 6 }),
-        body('passwordConfirm').custom((value, { req }) => {
+                })
+                    .then(user => {
+                        if (user) {
+                            return Promise.reject('Email already in use');
+                        }
+                    });
+            }),
+        body('password', 'Password should be 6 characters long Minimum').isLength({ min: 6 }).trim(),
+        body('passwordConfirm').trim().custom((value, { req }) => {
             if (value !== req.body.password) {
                 throw new Error('Password confirmation does not match password');
             }
