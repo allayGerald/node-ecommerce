@@ -9,19 +9,20 @@
  <% } %>
             <div class="form-control">
                 <label for="name">Name</label>
-                <input type="text" name="name" id="name">
+                <input type="text" name="name" id="name" value="<%= oldInputs.name %>">
             </div>
             <div class="form-control">
                 <label for="email">Email</label>
-                <input type="email" name="email" id="email">
+                <input type="email" name="email" id="email" value="<%= oldInputs.email %>">
             </div>
             <div class="form-control">
                 <label for="password">Password</label>
-                <input type="password" name="password" id="password">
+                <input type="password" name="password" id="password" value="<%= oldInputs.password %>">
             </div>
             <div class="form-control">
                 <label for="passwordConfirm">Confirm Password</label>
-                <input type="password" name="passwordConfirm" id="passwordConfirm">
+                <input type="password" name="passwordConfirm" id="passwordConfirm" 
+                value="<%= oldInputs.passwordConfirm %>">
             </div>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button class="btn" type="submit">Sign Up</button>
