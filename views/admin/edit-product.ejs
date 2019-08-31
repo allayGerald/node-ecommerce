@@ -11,6 +11,16 @@
                 let priceError = '';
                 if (errors !== null) {
                 for (const error of errors) { 
+                    // if (error.param === 'title') {
+                    //     titleError = error.msg;
+                    // }
+                    // if (error.param === 'imageUrl') {
+                    //     imageUrlError = error.msg;
+                    // }
+                    // }
+                    // if (error.param === 'price') {
+                    //     priceError = error.msg;
+                    // }
                     titleError = error.param === 'title' ? error.msg : '';
                     imageUrlError = error.param === 'imageUrl' ? error.msg : '';
                     priceError = error.param === 'price' ? error.msg : '';

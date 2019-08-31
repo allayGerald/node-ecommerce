@@ -59,10 +59,15 @@ app.use((req, res, next) => {
     }
     User.findByPk(req.session.user.id)
         .then(user => {
+            if (!user) {
+                return next();
+            }
             req.user = user;
             next();
         })
-        .catch(error => console.log(error))
+        .catch(error => {
+            throw new Error(error);
+        })
 });
 
 app.use((req, res, next) => {
@@ -75,7 +80,13 @@ app.use(authRoutes);
 app.use(adminRoutes);
 app.use(shopRoutes);
 
+app.get('/500', errorController.get500Page);
+
 app.use(errorController.get404Page);
+
+app.use((error, req, res, next) => {
+    res.redirect('/500');
+});
 
 User.hasMany(Product);
 User.hasOne(Cart);

@@ -19,7 +19,7 @@ exports.postAddProduct = (req, res, next) => {
     const user = req.user;
 
     const errors = validationResult(req);
-console.log(errors.array()[0]);
+    console.log(errors.array()[0]);
     if (!errors.isEmpty()) {
         return res.status(422).render('admin/add-product',
             {
@@ -42,8 +42,11 @@ console.log(errors.array()[0]);
         .then(() => {
             res.redirect('/admin/products');
         })
-        .catch(error => {
-            console.log(error);
+        .catch(err => {
+            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         })
 
 }
@@ -60,8 +63,11 @@ exports.getAdminProductsPage = (req, res, next) => {
                     path: 'admin/products'
                 });
         })
-        .catch(error => {
-            console.log(error);
+        .catch(err => {
+            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 }
 
@@ -83,7 +89,12 @@ exports.getEditPage = (req, res, next) => {
                 errors: null
             })
         })
-        .catch(error => console.log(error));
+        .catch(err => {
+            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 }
 
 exports.updateProduct = (req, res, next) => {
@@ -122,7 +133,12 @@ exports.updateProduct = (req, res, next) => {
         .then(() => {
             res.redirect('/admin/products');
         })
-        .catch(error => console.log(error));
+        .catch(err => {
+            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 }
 
 exports.deleteProduct = (req, res, next) => {
@@ -136,5 +152,17 @@ exports.deleteProduct = (req, res, next) => {
         }
     }).then(() => {
         res.redirect('/admin/products');
-    }).catch(error => console.log(error));
+    }).catch(err => {
+        console.log(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+    });
+}
+
+const handle500 = err => {
+    console.log(err);
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
 }
